@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ToastProvider } from '@/components/ui/ToastProvider';
 
 export const metadata: Metadata = {
   title: 'UrjaSync - Smart Home Super App',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }
