@@ -5,6 +5,8 @@ import WasherIcon from '@/components/icons/WasherIcon';
 import LightbulbIcon from '@/components/icons/LightbulbIcon';
 import MoonIcon from '@/components/icons/MoonIcon';
 import SunIcon from '@/components/icons/SunIcon';
+import { initialEnergyCommandCenter } from '@/lib/data/energyCommandCenter';
+import { initialMicrogridSnapshot } from '@/lib/data/microgrid';
 
 export const MOCK_DATA: MockData = {
   liveUsage: 2.8,
@@ -144,4 +146,6 @@ export const MOCK_DATA: MockData = {
       period: 'Aug 2025',
     },
   ],
+  energyCommandCenter: initialEnergyCommandCenter,
+  microgrid: initialMicrogridSnapshot,
 };
