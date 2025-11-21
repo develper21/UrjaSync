@@ -10,6 +10,7 @@ import OptimizationView from '@/components/views/OptimizationView';
 import RoutinesView from '@/components/views/RoutinesView';
 import BillingView from '@/components/views/BillingView';
 import SettingsView from '@/components/views/SettingsView';
+import MicrogridView from '@/components/views/MicrogridView';
 import { MOCK_DATA } from '@/lib/mockData';
 
 export default function Home() {
@@ -27,6 +28,8 @@ export default function Home() {
         return <RoutinesView />;
       case 'billing':
         return <BillingView />;
+      case 'microgrid':
+        return <MicrogridView />;
       case 'settings':
         return <SettingsView />;
       default:

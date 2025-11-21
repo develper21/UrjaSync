@@ -8,6 +8,7 @@ import ClockIcon from '@/components/icons/ClockIcon';
 import CreditCardIcon from '@/components/icons/CreditCardIcon';
 import CogIcon from '@/components/icons/CogIcon';
 import LogOutIcon from '@/components/icons/LogOutIcon';
+import MicrogridIcon from '@/components/icons/MicrogridIcon';
 
 interface SidebarProps {
   currentPage: string;
@@ -15,11 +16,11 @@ interface SidebarProps {
 }
 
 const NavItem: React.FC<{
-  icon: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   active: boolean;
   onClick: () => void;
-}> = ({ icon, label, active, onClick }) => (
+}> = ({ icon: Icon, label, active, onClick }) => (
   <button
     onClick={onClick}
     className={`flex items-center w-full px-4 py-3 rounded-lg transition-colors duration-200 ${
@@ -28,9 +29,7 @@ const NavItem: React.FC<{
         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
     }`}
   >
-    {React.cloneElement(icon as React.ReactElement, {
-      className: 'w-5 h-5 mr-3',
-    })}
+    <Icon className="w-5 h-5 mr-3" />
     <span>{label}</span>
   </button>
 );
@@ -46,37 +45,43 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage }) => (
     {/* Navigation */}
     <nav className="flex-1 px-6 py-4 space-y-2">
       <NavItem
-        icon={<HomeIcon />}
+        icon={HomeIcon}
         label="Dashboard"
         active={currentPage === 'dashboard'}
         onClick={() => setCurrentPage('dashboard')}
       />
       <NavItem
-        icon={<CpuChipIcon />}
+        icon={CpuChipIcon}
         label="Appliances"
         active={currentPage === 'appliances'}
         onClick={() => setCurrentPage('appliances')}
       />
       <NavItem
-        icon={<SparklesIcon />}
+        icon={SparklesIcon}
         label="Optimization"
         active={currentPage === 'optimization'}
         onClick={() => setCurrentPage('optimization')}
       />
       <NavItem
-        icon={<ClockIcon />}
+        icon={ClockIcon}
         label="Routines"
         active={currentPage === 'routines'}
         onClick={() => setCurrentPage('routines')}
       />
       <NavItem
-        icon={<CreditCardIcon />}
+        icon={CreditCardIcon}
         label="Billing"
         active={currentPage === 'billing'}
         onClick={() => setCurrentPage('billing')}
       />
       <NavItem
-        icon={<CogIcon />}
+        icon={MicrogridIcon}
+        label="Microgrid"
+        active={currentPage === 'microgrid'}
+        onClick={() => setCurrentPage('microgrid')}
+      />
+      <NavItem
+        icon={CogIcon}
         label="Settings"
         active={currentPage === 'settings'}
         onClick={() => setCurrentPage('settings')}
@@ -86,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage }) => (
     {/* Footer / Logout */}
     <div className="px-6 py-6">
       <NavItem
-        icon={<LogOutIcon />}
+        icon={LogOutIcon}
         label="Logout"
         active={false}
         onClick={() => {}}

@@ -3,6 +3,7 @@
 import React from 'react';
 import StatCard from '@/components/dashboard/StatCard';
 import UsageChart from '@/components/dashboard/UsageChart';
+import EnergyCommandCenter from '@/components/dashboard/EnergyCommandCenter';
 import Recommendations from '@/components/dashboard/Recommendations';
 import ZapIcon from '@/components/icons/ZapIcon';
 import CurrencyRupeeIcon from '@/components/icons/CurrencyRupeeIcon';
@@ -10,6 +11,7 @@ import LeafIcon from '@/components/icons/LeafIcon';
 import SunIcon from '@/components/icons/SunIcon';
 import MoonIcon from '@/components/icons/MoonIcon';
 import { MOCK_DATA } from '@/lib/mockData';
+import { useEnergyCommandCenter } from '@/lib/hooks/useEnergyCommandCenter';
 
 interface DashboardViewProps {
   onNavigate?: (page: string) => void;
@@ -17,6 +19,15 @@ interface DashboardViewProps {
 
 const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
   const isPeak = MOCK_DATA.peakStatus === 'Peak Time';
+  const {
+    data: energyData,
+    loading: energyLoading,
+    mutating: energyMutating,
+    error: energyError,
+    updateBatteryMode,
+    updateEvSchedule,
+    refresh,
+  } = useEnergyCommandCenter({ initialData: MOCK_DATA.energyCommandCenter });
 
   return (
     <div className="space-y-6">
@@ -53,13 +64,21 @@ const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
         />
       </div>
 
+      <EnergyCommandCenter
+        data={energyData ?? MOCK_DATA.energyCommandCenter}
+        loading={energyLoading}
+        mutating={energyMutating}
+        error={energyError}
+        onBatteryModeChange={updateBatteryMode}
+        onEvScheduleUpdate={updateEvSchedule}
+        onRefresh={refresh}
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content (Chart + Top Appliances) */}
         <div className="lg:col-span-2 space-y-6">
           <UsageChart data={MOCK_DATA.usageHistory} />
         </div>
 
-        {/* Side Panel (Recommendations) */}
         <div className="lg:col-span-1 space-y-6">
           <Recommendations recommendations={MOCK_DATA.recommendations} />
           <div className="bg-white p-6 rounded-xl shadow-lg">
