@@ -15,7 +15,7 @@ const ApplianceCard: React.FC<ApplianceCardProps> = ({ appliance, onToggleStatus
   >
     <div>
       <div className="flex justify-between items-start">
-        {React.cloneElement(appliance.icon as React.ReactElement, {
+        {React.cloneElement(appliance.icon as React.ReactElement<any>, {
           className: `w-10 h-10 ${appliance.status === 'On' ? '' : 'text-gray-400'}`,
         })}
         <ToggleSwitch
