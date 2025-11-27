@@ -55,7 +55,7 @@ export const useEnergyCommandCenter = (options: UseEnergyCommandCenterOptions = 
         clearInterval(intervalRef.current);
       }
     };
-  }, [fetchData, refreshMs]);
+  }, [fetchData, refreshMs, initialData]);
 
   const mutate = useCallback(async (mutation: EnergyCommandCenterMutation) => {
     setMutating(true);
