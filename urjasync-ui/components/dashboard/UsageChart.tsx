@@ -6,7 +6,7 @@ interface UsageChartProps {
 
 const UsageChart: React.FC<UsageChartProps> = ({ data }) => (
   <div className="bg-white p-6 rounded-xl shadow-lg">
-    <h2 className="text-xl font-semibold mb-4 text-gray-700">Today's Usage (kW)</h2>
+    <h2 className="text-xl font-semibold mb-4 text-gray-700">Today&apos;s Usage (kW)</h2>
     <div className="flex items-end h-60 space-x-4">
       {data.map((item) => (
         <div key={item.name} className="flex-1 flex flex-col items-center">
