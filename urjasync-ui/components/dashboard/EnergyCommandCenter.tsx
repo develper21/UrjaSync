@@ -49,11 +49,11 @@ const EnergyCommandCenter: React.FC<EnergyCommandCenterProps> = ({
   const { addToast } = useToastContext();
 
   useEffect(() => {
-    if (data) {
+    if (data?.controls?.evSchedule) {
       setEvTime(data.controls.evSchedule.nextCharge);
       setEvStatus(data.controls.evSchedule.status);
     }
-  }, [data?.controls.evSchedule.nextCharge, data?.controls.evSchedule.status]);
+  }, [data?.controls?.evSchedule]);
 
   const netFlow = data ? data.overview.production - data.overview.consumption : 0;
   const netFlowPositive = netFlow >= 0;
@@ -95,7 +95,11 @@ const EnergyCommandCenter: React.FC<EnergyCommandCenterProps> = ({
   );
 
   const lastUpdatedLabel = data?.lastUpdated
-    ? new Date(data.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    ? new Date(data.lastUpdated).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      })
     : '—';
 
   const handleBatteryMode = async (mode: BatteryMode) => {
