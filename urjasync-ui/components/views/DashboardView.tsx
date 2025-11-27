@@ -32,7 +32,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-gray-800">Hello, User!</h1>
-      <p className="text-gray-600">Here's your unified home energy dashboard.</p>
+      <p className="text-gray-600">Here&apos;s your unified home energy dashboard.</p>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
