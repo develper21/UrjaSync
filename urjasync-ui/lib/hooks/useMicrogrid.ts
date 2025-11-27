@@ -46,7 +46,7 @@ export const useMicrogrid = (options: UseMicrogridOptions = {}) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [fetchData, refreshMs]);
+  }, [fetchData, refreshMs, initialData]);
 
   const refresh = useCallback(() => fetchData(), [fetchData]);
 
