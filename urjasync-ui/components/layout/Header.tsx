@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import BellIcon from '@/components/icons/BellIcon';
 
 interface HeaderProps {
@@ -42,10 +43,12 @@ const Header: React.FC<HeaderProps> = ({ peakStatus }) => (
         <BellIcon className="w-6 h-6" />
       </button>
       <div className="flex items-center space-x-3">
-        <img
+        <Image
           className="w-10 h-10 rounded-full"
           src="https://placehold.co/100x100/E2E8F0/4A5568?text=U"
           alt="User Avatar"
+          width={40}
+          height={40}
         />
         <div>
           <div className="font-semibold text-gray-800">Demo User</div>
