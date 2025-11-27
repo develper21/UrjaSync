@@ -64,7 +64,7 @@ const NotificationPopup: React.FC = () => {
             </div>
             <h3 className="font-bold text-gray-800 mb-2">Welcome to UrjaSync!</h3>
             <p className="text-sm text-gray-600">
-              Your smart meter and appliances are connected. You're all set to optimize!
+              Your smart meter and appliances are connected. You&apos;re all set to optimize!
             </p>
           </div>
         </div>
