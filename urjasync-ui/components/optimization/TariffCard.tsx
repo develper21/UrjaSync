@@ -23,7 +23,7 @@ const TariffCard: React.FC<TariffCardProps> = ({ tariffs }) => (
           }`}
         >
           <div className="flex items-center space-x-4">
-            {React.cloneElement(tariff.icon as React.ReactElement, {
+            {React.cloneElement(tariff.icon as React.ReactElement<any>, {
               className: 'w-6 h-6',
             })}
             <div>
