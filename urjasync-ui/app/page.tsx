@@ -1,54 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
-import Sidebar from '@/components/layout/Sidebar';
-import Header from '@/components/layout/Header';
-import NotificationPopup from '@/components/layout/NotificationPopup';
-import DashboardView from '@/components/views/DashboardView';
-import AppliancesView from '@/components/views/AppliancesView';
-import OptimizationView from '@/components/views/OptimizationView';
-import RoutinesView from '@/components/views/RoutinesView';
-import BillingView from '@/components/views/BillingView';
-import SettingsView from '@/components/views/SettingsView';
-import MicrogridView from '@/components/views/MicrogridView';
-import { MOCK_DATA } from '@/lib/mockData';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  const router = useRouter();
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <DashboardView onNavigate={setCurrentPage} />;
-      case 'appliances':
-        return <AppliancesView />;
-      case 'optimization':
-        return <OptimizationView />;
-      case 'routines':
-        return <RoutinesView />;
-      case 'billing':
-        return <BillingView />;
-      case 'microgrid':
-        return <MicrogridView />;
-      case 'settings':
-        return <SettingsView />;
-      default:
-        return <DashboardView onNavigate={setCurrentPage} />;
+  useEffect(() => {
+    // Check if user is authenticated
+    const accessToken = localStorage.getItem('accessToken');
+    
+    if (accessToken) {
+      router.push('/dashboard');
+    } else {
+      router.push('/auth/login');
     }
-  };
+  }, [router]);
 
+  // Show loading while redirecting
   return (
-    <div className="flex h-screen bg-gray-100 font-sans">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header peakStatus={MOCK_DATA.peakStatus} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
-          {renderPage()}
-        </main>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-4">
+          <span className="text-white text-2xl font-bold">⚡</span>
+        </div>
+        <div className="h-8 w-8 border-b-2 border-blue-600 rounded-full animate-spin mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading UrjaSync...</p>
       </div>
-
-      <NotificationPopup />
     </div>
   );
 }
