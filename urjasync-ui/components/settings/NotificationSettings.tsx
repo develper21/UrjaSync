@@ -15,7 +15,7 @@ const NotificationSettings: React.FC = () => {
       optimizationReports,
       applianceAlerts,
     });
-    // TODO: Wire up with Supabase
+    // TODO: Wire up with backend API
   };
 
   return (
