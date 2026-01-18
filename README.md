@@ -128,13 +128,12 @@ npm run dev
 - Appliance alert settings
 - Device management
 
-## Supabase Integration Ready
+## Backend Integration Ready
 
-All components are built to be "Supabase-ready":
-
-- Mock data in `lib/mockData.ts` can be replaced with Supabase client calls
+All components are built to be "Backend-Ready":
+- Mock data in `lib/mockData.ts` can be replaced with API calls to `/api/*` endpoints
 - All forms use standard React form patterns
-- Ready for integration with Supabase Edge Functions
+- Ready for integration with Next.js API routes
 - TypeScript interfaces in `lib/types.ts` for type safety
 
 ## Animations & Interactions
@@ -148,8 +147,11 @@ All components are built to be "Supabase-ready":
 
 ## Future Enhancements
 
-- [ ] Supabase authentication integration
-- [ ] Real-time data updates with Supabase Realtime
+- [x] Complete backend API implementation with Next.js API routes
+- [x] PostgreSQL database with Drizzle ORM
+- [x] JWT-based authentication with OTP verification
+- [x] Email service integration
+- [ ] Real-time data updates with WebSockets
 - [ ] User profile picture upload
 - [ ] Advanced analytics and reporting
 - [ ] Mobile app version
