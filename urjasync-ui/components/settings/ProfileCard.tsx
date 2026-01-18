@@ -21,7 +21,7 @@ const ProfileCard: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Profile updated:', formData);
-    // TODO: Wire up with Supabase
+    // TODO: Wire up with backend API
   };
 
   return (
