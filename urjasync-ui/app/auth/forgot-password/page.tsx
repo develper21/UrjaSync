@@ -2,14 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,10 +49,10 @@ const ForgotPasswordPage: React.FC = () => {
               Check your email
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              We've sent a password reset code to {email}
+              We&apos;ve sent a password reset code to {email}
             </p>
             <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-blue-800 mb-2">What's next?</h3>
+              <h3 className="text-sm font-medium text-blue-800 mb-2">What&apos;s next?</h3>
               <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
                 <li>Check your email for the reset code</li>
                 <li>Return to this page and enter the code</li>
@@ -97,7 +95,7 @@ const ForgotPasswordPage: React.FC = () => {
             Forgot your password?
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            No worries, we'll send you a reset code
+            No worries, we&apos;ll send you a reset code
           </p>
         </div>
 
