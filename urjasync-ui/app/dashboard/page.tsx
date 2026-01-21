@@ -6,22 +6,25 @@ import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 import NotificationPopup from '@/components/layout/NotificationPopup';
 import DashboardView from '@/components/views/DashboardView';
+import AnalyticsView from '@/components/views/AnalyticsView';
 import AppliancesView from '@/components/views/AppliancesView';
 import OptimizationView from '@/components/views/OptimizationView';
 import RoutinesView from '@/components/views/RoutinesView';
 import BillingView from '@/components/views/BillingView';
 import SettingsView from '@/components/views/SettingsView';
 import MicrogridView from '@/components/views/MicrogridView';
+import MarketplaceView from '@/components/views/MarketplaceView';
+import SustainabilityView from '@/components/views/SustainabilityView';
+import MaintenanceView from '@/components/views/MaintenanceView';
 import { MOCK_DATA } from '@/lib/mockData';
 
 const DashboardPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
+  const [currentPage, setCurrentPage] = React.useState('dashboard');
 
   if (!isAuthenticated) {
     return null; // Will redirect automatically
   }
-
-  const [currentPage, setCurrentPage] = React.useState('dashboard');
 
   const renderPage = () => {
     switch (currentPage) {
@@ -33,6 +36,14 @@ const DashboardPage: React.FC = () => {
         return <OptimizationView />;
       case 'routines':
         return <RoutinesView />;
+      case 'analytics':
+        return <AnalyticsView />;
+      case 'marketplace':
+        return <MarketplaceView />;
+      case 'sustainability':
+        return <SustainabilityView />;
+      case 'maintenance':
+        return <MaintenanceView />;
       case 'billing':
         return <BillingView />;
       case 'microgrid':
