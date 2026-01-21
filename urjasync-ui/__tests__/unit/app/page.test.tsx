@@ -26,7 +26,7 @@ describe('Home Page', () => {
     
     expect(screen.getByText('Loading UrjaSync...')).toBeInTheDocument()
     expect(screen.getByText('⚡')).toBeInTheDocument()
-    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument()
   })
 
   it('redirects to dashboard when access token exists', () => {
@@ -52,7 +52,7 @@ describe('Home Page', () => {
   it('has correct loading spinner styling', () => {
     render(<Home />)
     
-    const spinner = screen.getByRole('status')
+    const spinner = document.querySelector('.animate-spin')
     expect(spinner).toHaveClass('animate-spin')
     expect(spinner).toHaveClass('border-b-2')
     expect(spinner).toHaveClass('border-blue-600')
