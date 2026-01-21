@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-const ResetPasswordPage: React.FC = () => {
+function ResetPasswordContent() {
   const [formData, setFormData] = useState({
     newPassword: '',
     confirmPassword: '',
@@ -253,6 +253,14 @@ const ResetPasswordPage: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+}
+
+const ResetPasswordPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 };
 
