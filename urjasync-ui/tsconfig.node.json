@@ -11,7 +11,9 @@
     "next-env.d.ts",
     "next.config.js",
     "postcss.config.js",
-    "tailwind.config.ts"
+    "tailwind.config.ts",
+    "playwright.config.ts",
+    "drizzle.config.ts"
   ],
   "exclude": [
     "node_modules"
