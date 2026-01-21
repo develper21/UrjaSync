@@ -9,6 +9,10 @@ import CreditCardIcon from '@/components/icons/CreditCardIcon';
 import CogIcon from '@/components/icons/CogIcon';
 import LogOutIcon from '@/components/icons/LogOutIcon';
 import MicrogridIcon from '@/components/icons/MicrogridIcon';
+import ChartBarIcon from '@/components/icons/ChartBarIcon';
+import ArrowsRightLeftIcon from '@/components/icons/ArrowsRightLeftIcon';
+import LeafIcon from '@/components/icons/LeafIcon';
+import WrenchIcon from '@/components/icons/WrenchIcon';
 
 interface SidebarProps {
   currentPage: string;
@@ -67,6 +71,30 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage }) => (
         label="Routines"
         active={currentPage === 'routines'}
         onClick={() => setCurrentPage('routines')}
+      />
+      <NavItem
+        icon={ChartBarIcon}
+        label="Analytics"
+        active={currentPage === 'analytics'}
+        onClick={() => setCurrentPage('analytics')}
+      />
+      <NavItem
+        icon={ArrowsRightLeftIcon}
+        label="Marketplace"
+        active={currentPage === 'marketplace'}
+        onClick={() => setCurrentPage('marketplace')}
+      />
+      <NavItem
+        icon={LeafIcon}
+        label="Sustainability"
+        active={currentPage === 'sustainability'}
+        onClick={() => setCurrentPage('sustainability')}
+      />
+      <NavItem
+        icon={WrenchIcon}
+        label="Maintenance"
+        active={currentPage === 'maintenance'}
+        onClick={() => setCurrentPage('maintenance')}
       />
       <NavItem
         icon={CreditCardIcon}
