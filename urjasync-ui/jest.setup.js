@@ -92,3 +92,23 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   unobserve: jest.fn(),
   disconnect: jest.fn(),
 }))
+
+// Mock Next.js API routes
+jest.mock('next/server', () => ({
+  NextRequest: jest.fn(),
+  NextResponse: {
+    json: jest.fn((data, options) => ({
+      status: options?.status || 200,
+      json: async () => data,
+    })),
+  },
+}))
+
+// Mock Node.js globals for API routes
+global.Request = jest.fn()
+global.Response = jest.fn()
+
+// Polyfill TextEncoder for Node.js environment
+const { TextEncoder, TextDecoder } = require('util');
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
