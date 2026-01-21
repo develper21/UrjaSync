@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 
-const VerifyEmailPage: React.FC = () => {
+function VerifyEmailContent() {
   const [otp, setOtp] = useState(['', '', '', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -212,7 +211,7 @@ const VerifyEmailPage: React.FC = () => {
 
             {/* Resend Link */}
             <div className="text-center text-sm">
-              Didn't receive the code?{' '}
+              Didn&apos;t receive the code?{' '}
               <button
                 type="button"
                 onClick={handleResend}
@@ -233,6 +232,14 @@ const VerifyEmailPage: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+}
+
+const VerifyEmailPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 };
 
