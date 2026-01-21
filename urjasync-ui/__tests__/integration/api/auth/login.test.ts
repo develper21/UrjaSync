@@ -1,10 +1,6 @@
 import { NextRequest } from 'next/server'
-import { POST } from '../../../../../app/api/auth/login/route'
-import { db } from '@/lib/db'
-import { users } from '@/lib/db/schema'
-import bcrypt from 'bcryptjs'
 
-// Mock dependencies
+// Mock dependencies before importing the route
 jest.mock('@/lib/db', () => ({
   db: {
     select: jest.fn(() => ({
@@ -17,7 +13,37 @@ jest.mock('@/lib/db', () => ({
   },
 }))
 
-jest.mock('bcryptjs')
+jest.mock('@/lib/db/schema', () => ({
+  users: {
+    id: 'id',
+    email: 'email',
+    password: 'password',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    role: 'role',
+    isEmailVerified: 'isEmailVerified',
+    avatar: 'avatar',
+  },
+}))
+
+jest.mock('bcryptjs', () => ({
+  compare: jest.fn(),
+}))
+
+// Mock AuthService
+jest.mock('@/lib/services/authService', () => ({
+  AuthService: {
+    generateAccessToken: jest.fn(() => 'mock-access-token'),
+    createRefreshToken: jest.fn(() => Promise.resolve('mock-refresh-token')),
+  },
+}))
+
+// Import route after mocking
+const { POST } = require('../../../../../app/api/auth/login/route')
+
+// Get mocked modules
+const { db } = require('@/lib/db') as any
+const { bcrypt } = require('bcryptjs') as any
 
 describe('/api/auth/login', () => {
   beforeEach(() => {
@@ -149,12 +175,9 @@ describe('/api/auth/login', () => {
     ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
     // Mock AuthService
-    jest.mock('@/lib/services/authService', () => ({
-      AuthService: {
-        generateAccessToken: jest.fn(() => 'mock-access-token'),
-        createRefreshToken: jest.fn(() => Promise.resolve('mock-refresh-token')),
-      },
-    }))
+    const { AuthService } = require('@/lib/services/authService');
+    AuthService.generateAccessToken.mockReturnValue('mock-access-token');
+    AuthService.createRefreshToken.mockResolvedValue('mock-refresh-token');
 
     const request = new NextRequest('http://localhost:3000/api/auth/login', {
       method: 'POST',
