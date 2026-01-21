@@ -12,7 +12,6 @@ export interface JWTPayload {
 export class AuthService {
   private static readonly JWT_SECRET = process.env.JWT_SECRET!;
   private static readonly JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-  private static readonly REFRESH_TOKEN_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
 
   static generateAccessToken(payload: JWTPayload): string {
     return jwt.sign(payload, this.JWT_SECRET, {
