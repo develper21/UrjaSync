@@ -4,7 +4,7 @@
   "description": "UrjaSync - Smart Home Super App",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch lib/server.ts",
+    "dev": "next dev",
     "build": "next build",
     "start": "tsx lib/server.ts",
     "lint": "next lint",
