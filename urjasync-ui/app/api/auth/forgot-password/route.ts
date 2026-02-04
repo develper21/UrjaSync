@@ -30,9 +30,14 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate and send OTP
-    const otp = await OTPService.createOTP(validatedData.email, 'password_reset');
-    await EmailService.sendOTP(validatedData.email, otp, 'password_reset');
+    try {
+      // Generate and send OTP
+      const otp = await OTPService.createOTP(validatedData.email, 'password_reset');
+      await EmailService.sendOTP(validatedData.email, otp, 'password_reset');
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Continue with response even if email fails
+    }
 
     return NextResponse.json({
       success: true,
@@ -52,4 +57,11 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json(
+    { success: false, error: { message: 'Method not allowed' } },
+    { status: 405 }
+  );
 }
