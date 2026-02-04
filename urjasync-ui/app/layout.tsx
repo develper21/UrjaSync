@@ -5,6 +5,10 @@ import { ToastProvider } from '@/components/ui/ToastProvider';
 export const metadata: Metadata = {
   title: 'UrjaSync - Smart Home Super App',
   description: 'Monitor, control, and optimize all your smart home appliances from a single dashboard.',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
