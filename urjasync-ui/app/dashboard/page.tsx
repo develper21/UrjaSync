@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
@@ -16,11 +16,15 @@ import MicrogridView from '@/components/views/MicrogridView';
 import MarketplaceView from '@/components/views/MarketplaceView';
 import SustainabilityView from '@/components/views/SustainabilityView';
 import MaintenanceView from '@/components/views/MaintenanceView';
-import { MOCK_DATA } from '@/lib/mockData';
 
-const DashboardPage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const [currentPage, setCurrentPage] = React.useState('dashboard');
+const DashboardPage = () => {
+  const { isAuthenticated, isClient, user } = useAuth();
+  const [currentPage, setCurrentPage] = useState('dashboard');
+
+  // Show loading or null while checking authentication
+  if (!isClient) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return null; // Will redirect automatically
@@ -55,12 +59,22 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  // Determine peak status based on current time
+  const getPeakStatus = () => {
+    const hour = new Date().getHours();
+    // Peak hours: 6 PM - 10 PM
+    if (hour >= 18 && hour < 22) {
+      return 'Peak Time';
+    }
+    return 'Off-Peak';
+  };
+
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header peakStatus={MOCK_DATA.peakStatus} />
+        <Header peakStatus={getPeakStatus()} user={user} />
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
           {renderPage()}
         </main>
