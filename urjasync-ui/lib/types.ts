@@ -70,6 +70,8 @@ export interface Routine {
   name: string;
   trigger: string;
   actions: string[];
+  isActive?: boolean;
+  lastRun?: string;
 }
 
 export interface Bill {
