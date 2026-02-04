@@ -3,6 +3,97 @@
 import React, { useState } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+// Custom SVG Icons for Sustainability
+const GlobeIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const TreeIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+  </svg>
+);
+
+const WaterDropIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
+  </svg>
+);
+
+const RecycleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+  </svg>
+);
+
+const TrophyIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+  </svg>
+);
+
+const LeafIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
+);
+
+const SunIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
+
+const BoltIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+);
+
+const WindIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+  </svg>
+);
+
+const BatteryIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+);
+
+const SeedlingIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+  </svg>
+);
+
+const CrownIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+  </svg>
+);
+
+const LightbulbIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+  </svg>
+);
+
+const PlugIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+);
+
+const PhoneIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+  </svg>
+);
+
 const SustainabilityView: React.FC = () => {
   const [timeRange, setTimeRange] = useState('30d');
   const [activeTab, setActiveTab] = useState('overview');
@@ -17,10 +108,10 @@ const SustainabilityView: React.FC = () => {
   ];
 
   const energySources = [
-    { source: 'Solar', percentage: 35, color: '#F59E0B', icon: '☀️' },
-    { source: 'Grid', percentage: 45, color: '#6B7280', icon: '⚡' },
-    { source: 'Wind', percentage: 15, color: '#3B82F6', icon: '💨' },
-    { source: 'Battery', percentage: 5, color: '#10B981', icon: '🔋' },
+    { source: 'Solar', percentage: 35, color: '#F59E0B', icon: <SunIcon className="w-6 h-6 text-yellow-500" /> },
+    { source: 'Grid', percentage: 45, color: '#6B7280', icon: <BoltIcon className="w-6 h-6 text-gray-600" /> },
+    { source: 'Wind', percentage: 15, color: '#3B82F6', icon: <WindIcon className="w-6 h-6 text-blue-500" /> },
+    { source: 'Battery', percentage: 5, color: '#10B981', icon: <BatteryIcon className="w-6 h-6 text-green-500" /> },
   ];
 
   const sustainabilityGoals = [
@@ -31,7 +122,7 @@ const SustainabilityView: React.FC = () => {
       target: 30,
       deadline: '2024-12-31',
       status: 'on-track',
-      icon: '🌍'
+      icon: <GlobeIcon className="w-6 h-6 text-green-600" />
     },
     {
       id: 2,
@@ -40,7 +131,7 @@ const SustainabilityView: React.FC = () => {
       target: 50,
       deadline: '2024-06-30',
       status: 'on-track',
-      icon: '🌱'
+      icon: <SeedlingIcon className="w-6 h-6 text-green-600" />
     },
     {
       id: 3,
@@ -49,7 +140,7 @@ const SustainabilityView: React.FC = () => {
       target: 100,
       deadline: '2024-09-30',
       status: 'ahead',
-      icon: '♻️'
+      icon: <RecycleIcon className="w-6 h-6 text-blue-600" />
     },
     {
       id: 4,
@@ -58,15 +149,15 @@ const SustainabilityView: React.FC = () => {
       target: 100,
       deadline: '2024-03-31',
       status: 'behind',
-      icon: '🌳'
+      icon: <TreeIcon className="w-6 h-6 text-green-600" />
     },
   ];
 
   const achievements = [
-    { id: 1, title: 'Eco Warrior', description: '30 days of reduced consumption', date: '2024-01-15', icon: '🏆', unlocked: true },
-    { id: 2, title: 'Solar Champion', description: '50% solar energy usage', date: '2024-01-10', icon: '☀️', unlocked: true },
-    { id: 3, title: 'Carbon Neutral', description: 'Net-zero emissions for a week', date: '2024-01-08', icon: '🌿', unlocked: true },
-    { id: 4, title: 'Green Leader', description: 'Top 10% in community', date: '-', icon: '👑', unlocked: false },
+    { id: 1, title: 'Eco Warrior', description: '30 days of reduced consumption', date: '2024-01-15', icon: <TrophyIcon className="w-8 h-8 text-yellow-500" />, unlocked: true },
+    { id: 2, title: 'Solar Champion', description: '50% solar energy usage', date: '2024-01-10', icon: <SunIcon className="w-8 h-8 text-yellow-500" />, unlocked: true },
+    { id: 3, title: 'Carbon Neutral', description: 'Net-zero emissions for a week', date: '2024-01-08', icon: <LeafIcon className="w-8 h-8 text-green-500" />, unlocked: true },
+    { id: 4, title: 'Green Leader', description: 'Top 10% in community', date: '-', icon: <CrownIcon className="w-8 h-8 text-purple-500" />, unlocked: false },
   ];
 
   const environmentalImpact = {
@@ -85,7 +176,7 @@ const SustainabilityView: React.FC = () => {
       impact: 'High',
       cost: '₹1,50,000',
       roi: '4 years',
-      icon: '☀️'
+      icon: <SunIcon className="w-6 h-6 text-yellow-500" />
     },
     {
       type: 'efficiency',
@@ -94,7 +185,7 @@ const SustainabilityView: React.FC = () => {
       impact: 'Medium',
       cost: '₹8,000',
       roi: '1.5 years',
-      icon: '💡'
+      icon: <LightbulbIcon className="w-6 h-6 text-yellow-500" />
     },
     {
       type: 'appliance',
@@ -103,7 +194,7 @@ const SustainabilityView: React.FC = () => {
       impact: 'High',
       cost: '₹45,000',
       roi: '3 years',
-      icon: '🔌'
+      icon: <PlugIcon className="w-6 h-6 text-blue-500" />
     },
     {
       type: 'behavior',
@@ -112,7 +203,7 @@ const SustainabilityView: React.FC = () => {
       impact: 'Medium',
       cost: 'Free',
       roi: 'Immediate',
-      icon: '📱'
+      icon: <PhoneIcon className="w-6 h-6 text-green-500" />
     },
   ];
 
@@ -149,7 +240,9 @@ const SustainabilityView: React.FC = () => {
               <p className="text-sm text-gray-600">CO₂ Saved</p>
               <p className="text-2xl font-bold text-green-600">{environmentalImpact.carbonSaved} tons</p>
             </div>
-            <div className="text-3xl">🌍</div>
+            <div className="text-3xl text-green-600">
+              <GlobeIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -159,7 +252,9 @@ const SustainabilityView: React.FC = () => {
               <p className="text-sm text-gray-600">Trees Equivalent</p>
               <p className="text-2xl font-bold text-green-600">{environmentalImpact.treesEquivalent}</p>
             </div>
-            <div className="text-3xl">🌳</div>
+            <div className="text-3xl text-green-600">
+              <TreeIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -169,7 +264,9 @@ const SustainabilityView: React.FC = () => {
               <p className="text-sm text-gray-600">Water Saved</p>
               <p className="text-2xl font-bold text-blue-600">{environmentalImpact.waterSaved}L</p>
             </div>
-            <div className="text-3xl">💧</div>
+            <div className="text-3xl text-blue-600">
+              <WaterDropIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -179,7 +276,9 @@ const SustainabilityView: React.FC = () => {
               <p className="text-sm text-gray-600">Waste Reduced</p>
               <p className="text-2xl font-bold text-yellow-600">{environmentalImpact.wasteReduced}%</p>
             </div>
-            <div className="text-3xl">♻️</div>
+            <div className="text-3xl text-yellow-600">
+              <RecycleIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -189,7 +288,9 @@ const SustainabilityView: React.FC = () => {
               <p className="text-sm text-gray-600">Community Rank</p>
               <p className="text-2xl font-bold text-purple-600">#{environmentalImpact.communityRank}</p>
             </div>
-            <div className="text-3xl">🏆</div>
+            <div className="text-3xl text-purple-600">
+              <TrophyIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -199,7 +300,9 @@ const SustainabilityView: React.FC = () => {
               <p className="text-sm text-gray-600">Green Score</p>
               <p className="text-2xl font-bold text-green-600">A+</p>
             </div>
-            <div className="text-3xl">🌿</div>
+            <div className="text-3xl text-green-600">
+              <LeafIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
       </div>
