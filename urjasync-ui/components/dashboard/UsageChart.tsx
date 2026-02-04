@@ -7,21 +7,22 @@ interface UsageChartProps {
 const UsageChart: React.FC<UsageChartProps> = ({ data }) => {
   console.log('UsageChart received data:', data); // Debug log
   
-  // Always ensure we have data
-  const chartData = data.length > 0 ? data : [
-    { name: '00:00', usage: 0.8 },
-    { name: '02:00', usage: 0.6 },
-    { name: '04:00', usage: 0.5 },
-    { name: '06:00', usage: 1.2 },
-    { name: '08:00', usage: 2.1 },
-    { name: '10:00', usage: 1.8 },
-    { name: '12:00', usage: 2.5 },
-    { name: '14:00', usage: 2.2 },
-    { name: '16:00', usage: 1.9 },
-    { name: '18:00', usage: 3.2 },
-    { name: '20:00', usage: 2.8 },
-    { name: '22:00', usage: 1.5 },
-  ];
+  // If no data, show empty state
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-lg">
+        <h2 className="text-xl font-semibold mb-4 text-gray-700">Today&apos;s Usage (kW)</h2>
+        <div className="flex items-center justify-center h-60 text-gray-500">
+          <div className="text-center">
+            <p className="text-lg">No usage data available</p>
+            <p className="text-sm mt-2">Start using your appliances to see usage patterns</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  const chartData = data;
   
   const maxUsage = Math.max(...chartData.map(item => item.usage), 4);
   
