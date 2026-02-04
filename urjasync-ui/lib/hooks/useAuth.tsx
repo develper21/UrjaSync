@@ -1,27 +1,52 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  isEmailVerified: boolean;
+  avatar?: string;
+}
 
 // Hook to check authentication status
 export const useAuth = () => {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const accessToken = localStorage.getItem('accessToken');
-    const user = localStorage.getItem('user');
+    setIsClient(true);
+    
+    // Get data from localStorage only on client side
+    const storedAccessToken = localStorage.getItem('accessToken');
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    const storedUser = localStorage.getItem('user');
 
-    if (!accessToken || !user) {
+    if (storedAccessToken && storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        setAccessToken(storedAccessToken);
+        setRefreshToken(storedRefreshToken);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        // Clear invalid data
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        router.push('/auth/login');
+      }
+    } else {
       router.push('/auth/login');
-      return;
     }
   }, [router]);
-
-  // Get user data
-  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
-  const accessToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-  const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
 
   const logout = () => {
     // Clear localStorage
@@ -29,17 +54,29 @@ export const useAuth = () => {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     
+    // Clear state
+    setUser(null);
+    setAccessToken(null);
+    setRefreshToken(null);
+    
     // Redirect to login
     router.push('/auth/login');
   };
 
-  const isAuthenticated = !!accessToken && !!userData.id;
+  const updateUser = (newUserData: User) => {
+    setUser(newUserData);
+    localStorage.setItem('user', JSON.stringify(newUserData));
+  };
+
+  const isAuthenticated = isClient && !!accessToken && !!user?.id;
 
   return {
-    user: userData,
+    user,
     accessToken,
     refreshToken,
     isAuthenticated,
+    isClient,
     logout,
+    updateUser,
   };
 };
