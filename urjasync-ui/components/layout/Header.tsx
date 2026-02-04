@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import BellIcon from '@/components/icons/BellIcon';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 interface User {
   id: string;
@@ -143,48 +144,36 @@ const NotificationDropdown: React.FC<{
 };
 
 const Header: React.FC<HeaderProps> = ({ peakStatus, user }) => {
+  const { accessToken } = useAuth();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    // Mock notifications - in real app, this would come from API
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        title: 'High Energy Usage Alert',
-        message: 'Your AC consumed 30% more energy than usual today',
-        type: 'warning',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-        read: false
-      },
-      {
-        id: '2',
-        title: 'Bill Generated',
-        message: 'Your monthly bill of ₹2,450 has been generated',
-        type: 'info',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-        read: false
-      },
-      {
-        id: '3',
-        title: 'Device Offline',
-        message: 'Your Philips TV has been offline for 2 hours',
-        type: 'error',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
-        read: true
-      },
-      {
-        id: '4',
-        title: 'Energy Saving Goal Achieved',
-        message: 'You saved 15% energy this week! Great job!',
-        type: 'success',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-        read: true
+    const fetchNotifications = async () => {
+      if (!accessToken) return;
+      
+      try {
+        const response = await fetch('/api/notifications', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setNotifications(data.data.notifications || []);
+        } else {
+          // Silent handling - no error log, just set empty array
+          setNotifications([]); 
+        }
+      } catch (error) {
+        // Silent handling - no error log, just set empty array
+        setNotifications([]); 
       }
-    ];
+    };
 
-    setNotifications(mockNotifications);
-  }, []);
+    fetchNotifications();
+  }, [accessToken]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
