@@ -1,9 +1,50 @@
 'use client';
 
 import React, { useState } from 'react';
+import CreateOrderModal from '@/components/marketplace/CreateOrderModal';
+import TradingHistoryModal from '@/components/marketplace/TradingHistoryModal';
+
+// Custom SVG Icons for Marketplace
+const UsersIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+  </svg>
+);
+
+const BoltIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+);
+
+const CurrencyDollarIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const TrendingUpIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+  </svg>
+);
+
+const OnlineIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const StarIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+  </svg>
+);
 
 const MarketplaceView: React.FC = () => {
   const [activeTab, setActiveTab] = useState('trade');
+  const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false);
+  const [isTradingHistoryModalOpen, setIsTradingHistoryModalOpen] = useState(false);
 
   // Mock data for marketplace
   const buyOrders = [
@@ -35,8 +76,18 @@ const MarketplaceView: React.FC = () => {
   };
 
   const createOrder = () => {
-    // Handle order creation
-    console.log('Creating new order...');
+    setIsCreateOrderModalOpen(true);
+  };
+
+  const showTradingHistory = () => {
+    setIsTradingHistoryModalOpen(true);
+  };
+
+  const handleCreateOrder = async (order: { type: 'buy' | 'sell'; amount: number; price: number }) => {
+    // Here you would normally make an API call to create the order
+    console.log('Creating order:', order);
+    // For now, just log it
+    alert(`${order.type === 'buy' ? 'Buy' : 'Sell'} order created: ${order.amount} kWh at ₹${order.price}/kWh`);
   };
 
   return (
@@ -54,7 +105,10 @@ const MarketplaceView: React.FC = () => {
           >
             Create Order
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={showTradingHistory}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
             Trading History
           </button>
         </div>
@@ -68,7 +122,9 @@ const MarketplaceView: React.FC = () => {
               <p className="text-sm text-gray-600">Active Traders</p>
               <p className="text-2xl font-bold text-gray-900">{communityStats.totalTraders}</p>
             </div>
-            <div className="text-3xl">👥</div>
+            <div className="text-3xl text-blue-600">
+              <UsersIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -78,7 +134,9 @@ const MarketplaceView: React.FC = () => {
               <p className="text-sm text-gray-600">Energy Traded (kWh)</p>
               <p className="text-2xl font-bold text-gray-900">{communityStats.totalEnergy}</p>
             </div>
-            <div className="text-3xl">⚡</div>
+            <div className="text-3xl text-yellow-600">
+              <BoltIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -88,7 +146,9 @@ const MarketplaceView: React.FC = () => {
               <p className="text-sm text-gray-600">Avg Price (₹/kWh)</p>
               <p className="text-2xl font-bold text-gray-900">{communityStats.avgPrice}</p>
             </div>
-            <div className="text-3xl">💰</div>
+            <div className="text-3xl text-green-600">
+              <CurrencyDollarIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -98,7 +158,9 @@ const MarketplaceView: React.FC = () => {
               <p className="text-sm text-gray-600">Total Savings</p>
               <p className="text-2xl font-bold text-green-600">₹{communityStats.totalSavings}</p>
             </div>
-            <div className="text-3xl">📈</div>
+            <div className="text-3xl text-blue-600">
+              <TrendingUpIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
 
@@ -108,7 +170,9 @@ const MarketplaceView: React.FC = () => {
               <p className="text-sm text-gray-600">Online Now</p>
               <p className="text-2xl font-bold text-green-600">{communityStats.activeNow}</p>
             </div>
-            <div className="text-3xl">🟢</div>
+            <div className="text-3xl text-green-600">
+              <OnlineIcon className="w-8 h-8" />
+            </div>
           </div>
         </div>
       </div>
@@ -170,7 +234,10 @@ const MarketplaceView: React.FC = () => {
                               {order.verified && <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Verified</span>}
                             </div>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-yellow-500">⭐ {order.rating}</span>
+                              <span className="flex items-center gap-1 text-yellow-500">
+                                <StarIcon className="w-4 h-4" />
+                                {order.rating}
+                              </span>
                               <span className="text-sm text-gray-500">{order.time}</span>
                             </div>
                           </div>
@@ -205,7 +272,10 @@ const MarketplaceView: React.FC = () => {
                               {order.verified && <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Verified</span>}
                             </div>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-yellow-500">⭐ {order.rating}</span>
+                              <span className="flex items-center gap-1 text-yellow-500">
+                                <StarIcon className="w-4 h-4" />
+                                {order.rating}
+                              </span>
                               <span className="text-sm text-gray-500">{order.time}</span>
                             </div>
                           </div>
@@ -324,6 +394,18 @@ const MarketplaceView: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Modals */}
+      <CreateOrderModal
+        isOpen={isCreateOrderModalOpen}
+        onClose={() => setIsCreateOrderModalOpen(false)}
+        onCreateOrder={handleCreateOrder}
+      />
+
+      <TradingHistoryModal
+        isOpen={isTradingHistoryModalOpen}
+        onClose={() => setIsTradingHistoryModalOpen(false)}
+      />
     </div>
   );
 };
