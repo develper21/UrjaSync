@@ -92,89 +92,75 @@ const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
             const usageData = await usageResponse.json();
             console.log('Usage data from API:', usageData);
             
-            // Always provide mock data for now to ensure chart works
-            const mockData = [
-              { name: '00:00', usage: 0.8 },
-              { name: '02:00', usage: 0.6 },
-              { name: '04:00', usage: 0.5 },
-              { name: '06:00', usage: 1.2 },
-              { name: '08:00', usage: 2.1 },
-              { name: '10:00', usage: 1.8 },
-              { name: '12:00', usage: 2.5 },
-              { name: '14:00', usage: 2.2 },
-              { name: '16:00', usage: 1.9 },
-              { name: '18:00', usage: 3.2 },
-              { name: '20:00', usage: 2.8 },
-              { name: '22:00', usage: 1.5 },
-            ];
-            setUsageHistory(mockData);
+            // Transform API data to chart format
+            if (usageData.data && usageData.data.usage && usageData.data.usage.length > 0) {
+              const chartData = usageData.data.usage.map((record: any) => {
+                const hour = new Date(record.timestamp).getHours();
+                return {
+                  name: `${hour.toString().padStart(2, '0')}:00`,
+                  usage: parseFloat(record.usage || '0')
+                };
+              }).slice(0, 12); // Take last 12 records
+              
+              setUsageHistory(chartData);
+            } else {
+              // No data available, show empty chart
+              setUsageHistory([]);
+            }
           } else {
-            console.log('API failed, using mock data');
-            const mockData = [
-              { name: '00:00', usage: 0.8 },
-              { name: '02:00', usage: 0.6 },
-              { name: '04:00', usage: 0.5 },
-              { name: '06:00', usage: 1.2 },
-              { name: '08:00', usage: 2.1 },
-              { name: '10:00', usage: 1.8 },
-              { name: '12:00', usage: 2.5 },
-              { name: '14:00', usage: 2.2 },
-              { name: '16:00', usage: 1.9 },
-              { name: '18:00', usage: 3.2 },
-              { name: '20:00', usage: 2.8 },
-              { name: '22:00', usage: 1.5 },
-            ];
-            setUsageHistory(mockData);
+            console.log('API failed, showing empty chart');
+            setUsageHistory([]);
           }
         } catch (error) {
-          console.log('Error fetching usage, using mock data:', error);
-          const mockData = [
-            { name: '00:00', usage: 0.8 },
-            { name: '02:00', usage: 0.6 },
-            { name: '04:00', usage: 0.5 },
-            { name: '06:00', usage: 1.2 },
-            { name: '08:00', usage: 2.1 },
-            { name: '10:00', usage: 1.8 },
-            { name: '12:00', usage: 2.5 },
-            { name: '14:00', usage: 2.2 },
-            { name: '16:00', usage: 1.9 },
-            { name: '18:00', usage: 3.2 },
-            { name: '20:00', usage: 2.8 },
-            { name: '22:00', usage: 1.5 },
-          ];
-          setUsageHistory(mockData);
+          console.log('Error fetching usage, showing empty chart:', error);
+          setUsageHistory([]);
         }
 
-        // Mock recommendations and routines for now
-        setRecommendations([
-          {
-            id: 'rec1',
-            title: 'Optimize AC Usage',
-            description: 'Your AC is consuming more energy than usual. Consider adjusting temperature.',
-            cta: 'Adjust Settings',
-          },
-          {
-            id: 'rec2',
-            title: 'Peak Hour Savings',
-            description: 'Shift heavy appliance usage to off-peak hours to save on electricity bills.',
-            cta: 'View Schedule',
-          },
-        ]);
+        // Fetch recommendations from API
+        try {
+          const recommendationsResponse = await fetch('/api/recommendations', {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+            },
+          });
+          
+          if (recommendationsResponse.ok) {
+            const recommendationsData = await recommendationsResponse.json();
+            setRecommendations(recommendationsData.data.recommendations || []);
+          } else {
+            console.log('Recommendations API failed');
+            setRecommendations([]);
+          }
+        } catch (error) {
+          console.log('Error fetching recommendations:', error);
+          setRecommendations([]);
+        }
 
-        setRoutines([
-          {
-            id: 'r1',
-            name: 'Good Night',
-            trigger: 'At 11:00 PM',
-            actions: ['Turn off all lights', 'Set Bedroom AC to 25°C'],
-          },
-          {
-            id: 'r2',
-            name: 'Morning',
-            trigger: 'At 6:00 AM',
-            actions: ['Turn on Geyser', 'Start Coffee Machine'],
-          },
-        ]);
+        // Fetch routines from API
+        try {
+          const routinesResponse = await fetch('/api/routines', {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+            },
+          });
+          
+          if (routinesResponse.ok) {
+            const routinesData = await routinesResponse.json();
+            const formattedRoutines = routinesData.data.routines.map((routine: any) => ({
+              id: routine.id,
+              name: routine.name,
+              trigger: typeof routine.trigger === 'string' ? routine.trigger : JSON.stringify(routine.trigger),
+              actions: Array.isArray(routine.actions) ? routine.actions.map((action: any) => typeof action === 'string' ? action : JSON.stringify(action)) : []
+            }));
+            setRoutines(formattedRoutines);
+          } else {
+            console.log('Routines API failed');
+            setRoutines([]);
+          }
+        } catch (error) {
+          console.log('Error fetching routines:', error);
+          setRoutines([]);
+        }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
