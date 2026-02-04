@@ -155,6 +155,27 @@ export const refreshTokens = pgTable('refresh_tokens', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Notification types enum
+export const notificationTypeEnum = pgEnum('notification_type', ['info', 'success', 'warning', 'error']);
+export const notificationSeverityEnum = pgEnum('notification_severity', ['info', 'low', 'medium', 'high', 'critical']);
+
+// Notifications table
+export const notifications = pgTable('notifications', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  type: notificationTypeEnum('type').notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  message: text('message').notNull(),
+  severity: notificationSeverityEnum('severity').default('info').notNull(),
+  category: varchar('category', { length: 50 }),
+  isRead: boolean('is_read').default(false).notNull(),
+  isSent: boolean('is_sent').default(false).notNull(),
+  sentVia: jsonb('sent_via').default('[]').notNull(),
+  metadata: jsonb('metadata').default({}).notNull(),
+  expiresAt: timestamp('expires_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // User sessions table
 export const userSessions = pgTable('user_sessions', {
   id: uuid('id').defaultRandom().primaryKey(),
