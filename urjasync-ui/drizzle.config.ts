@@ -3,10 +3,9 @@ import { defineConfig } from 'drizzle-kit';
 export default defineConfig({
   schema: './lib/db/schema.ts',
   out: './lib/db/migrations',
-  driver: 'd1',
+  driver: 'pg',
   dbCredentials: {
-    wranglerConfigPath: './wrangler.toml',
-    dbName: 'urjasync-db',
+    connectionString: process.env.DATABASE_URL!,
   },
   verbose: true,
   strict: true,
