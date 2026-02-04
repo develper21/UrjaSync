@@ -1,36 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDeviceManager } from '../../../lib/iot/device-manager';
+import { eq, and } from 'drizzle-orm';
+import { z } from 'zod';
+import { db } from '@/lib/db';
+import { appliances } from '@/lib/db/schema';
+import { authenticateRequest } from '@/lib/auth/helpers';
+
+// Validation schemas
+const createDeviceSchema = z.object({
+  name: z.string().min(1, 'Device name is required').max(255),
+  type: z.enum(['AC', 'Washer', 'Light', 'Geyser', 'Refrigerator', 'TV', 'Fan', 'Other']),
+  consumption: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Invalid consumption format').optional(),
+  schedule: z.object({
+    onTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format'),
+    offTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format'),
+    days: z.array(z.enum(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])),
+  }).optional(),
+  metadata: z.record(z.any()).optional(),
+});
 
 export async function GET(request: NextRequest) {
   try {
-    const deviceManager = getDeviceManager();
+    const { userId } = await authenticateRequest(request);
+
     const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status');
+    const type = searchParams.get('type');
+
+    let devices;
     
-    const type = searchParams.get('type') as any;
-    const online = searchParams.get('online');
-    
-    let devices = deviceManager.getAllDevices();
-    
-    // Filter by type if specified
-    if (type) {
-      devices = devices.filter(device => device.type === type);
+    if (status && type) {
+      devices = await db
+        .select()
+        .from(appliances)
+        .where(and(eq(appliances.userId, userId), eq(appliances.status, status as any), eq(appliances.type, type as any)));
+    } else if (status) {
+      devices = await db
+        .select()
+        .from(appliances)
+        .where(and(eq(appliances.userId, userId), eq(appliances.status, status as any)));
+    } else if (type) {
+      devices = await db
+        .select()
+        .from(appliances)
+        .where(and(eq(appliances.userId, userId), eq(appliances.type, type as any)));
+    } else {
+      devices = await db
+        .select()
+        .from(appliances)
+        .where(eq(appliances.userId, userId));
     }
-    
-    // Filter by online status if specified
-    if (online !== null) {
-      const isOnline = online === 'true';
-      devices = devices.filter(device => device.online === isOnline);
-    }
-    
+
     return NextResponse.json({
       success: true,
-      data: devices,
-      count: devices.length
+      data: { devices },
     });
   } catch (error) {
-    console.error('Error fetching devices:', error);
+    console.error('Get devices error:', error);
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { success: false, error: { message: error.message } },
+        { status: 401 }
+      );
+    }
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch devices' },
+      { success: false, error: { message: 'Internal server error' } },
       { status: 500 }
     );
   }
@@ -38,42 +71,46 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await authenticateRequest(request);
+
     const body = await request.json();
-    const deviceManager = getDeviceManager();
-    
-    // Validate required fields
-    const { name, type, location } = body;
-    if (!name || !type || !location) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields: name, type, location' },
-        { status: 400 }
-      );
-    }
-    
-    // Validate device type
-    const validTypes = ['smart_meter', 'smart_plug', 'appliance', 'sensor'];
-    if (!validTypes.includes(type)) {
-      return NextResponse.json(
-        { success: false, error: `Invalid device type. Must be one of: ${validTypes.join(', ')}` },
-        { status: 400 }
-      );
-    }
-    
-    const device = await deviceManager.registerDevice({
-      name,
-      type,
-      location,
-      metadata: body.metadata || {}
-    });
-    
+    const validatedData = createDeviceSchema.parse(body);
+
+    const [newDevice] = await db
+      .insert(appliances)
+      .values({
+        userId,
+        name: validatedData.name,
+        type: validatedData.type,
+        consumption: validatedData.consumption || '0',
+        status: 'Off',
+        schedule: validatedData.schedule || {},
+        metadata: validatedData.metadata || {},
+      })
+      .returning();
+
     return NextResponse.json({
       success: true,
-      data: device
-    }, { status: 201 });
+      message: 'Device created successfully',
+      data: { device: newDevice },
+    });
   } catch (error) {
-    console.error('Error registering device:', error);
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, error: { message: error.errors[0].message } },
+        { status: 400 }
+      );
+    }
+    
+    console.error('Create device error:', error);
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { success: false, error: { message: error.message } },
+        { status: 401 }
+      );
+    }
     return NextResponse.json(
-      { success: false, error: 'Failed to register device' },
+      { success: false, error: { message: 'Internal server error' } },
       { status: 500 }
     );
   }
