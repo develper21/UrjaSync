@@ -133,33 +133,33 @@ describe('Page Routes Structure Tests', () => {
   
   describe('Authentication Pages', () => {
     it('should have login page', () => {
-      expect(() => require('../../../../app/auth/login/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/auth/login/page')).not.toThrow();
     });
 
     it('should have register page', () => {
-      expect(() => require('../../../../app/auth/register/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/auth/register/page')).not.toThrow();
     });
 
     it('should have forgot-password page', () => {
-      expect(() => require('../../../../app/auth/forgot-password/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/auth/forgot-password/page')).not.toThrow();
     });
 
     it('should have reset-password page', () => {
-      expect(() => require('../../../../app/auth/reset-password/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/auth/reset-password/page')).not.toThrow();
     });
 
     it('should have verify-email page', () => {
-      expect(() => require('../../../../app/auth/verify-email/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/auth/verify-email/page')).not.toThrow();
     });
   });
 
   describe('Main Pages', () => {
     it('should have home page', () => {
-      expect(() => require('../../../../app/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/page')).not.toThrow();
     });
 
     it('should have dashboard page', () => {
-      expect(() => require('../../../../app/dashboard/page.tsx')).not.toThrow();
+      expect(() => require('../../../../app/dashboard/page')).not.toThrow();
     });
   });
 });
