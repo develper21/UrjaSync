@@ -50,9 +50,14 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    // Generate and send OTP
-    const otp = await OTPService.createOTP(validatedData.email, 'registration');
-    await EmailService.sendOTP(validatedData.email, otp, 'registration');
+    try {
+      // Generate and send OTP
+      const otp = await OTPService.createOTP(validatedData.email, 'registration');
+      await EmailService.sendOTP(validatedData.email, otp, 'registration');
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Continue with registration even if email fails
+    }
 
     return NextResponse.json({
       success: true,
