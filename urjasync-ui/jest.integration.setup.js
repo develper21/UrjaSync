@@ -44,7 +44,12 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock fetch for API route tests
-global.fetch = jest.fn()
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    status: 200,
+    json: () => Promise.resolve({ success: true }),
+  })
+);
 
 // Mock localStorage and sessionStorage for API route tests
 const localStorageMock = {
@@ -77,6 +82,72 @@ jest.mock('next/server', () => ({
 // Mock Node.js globals for API routes
 global.Request = jest.fn()
 global.Response = jest.fn()
+
+// Mock email service with proper error handling
+jest.mock('@/lib/services/emailService', () => ({
+  EmailService: {
+    sendEmail: jest.fn().mockResolvedValue(undefined),
+    sendOTP: jest.fn().mockImplementation((email, otp, usage) => {
+      // Simulate email sending failure for specific test cases
+      if (email === 'fail@example.com') {
+        throw new Error('Email service unavailable');
+      }
+      return Promise.resolve();
+    }),
+  },
+  OTPService: {
+    createOTP: jest.fn().mockResolvedValue('123456'),
+    verifyOTP: jest.fn().mockResolvedValue(true),
+  },
+}));
+
+// Mock database with proper error handling
+jest.mock('@/lib/db', () => ({
+  db: {
+    select: jest.fn(() => ({
+      from: jest.fn(() => ({
+        where: jest.fn(() => ({
+          limit: jest.fn(() => Promise.resolve([])),
+        })),
+      })),
+    })),
+    insert: jest.fn(() => ({
+      values: jest.fn(() => ({
+        returning: jest.fn(() => Promise.resolve([{
+          id: 'test-id',
+          email: 'test@example.com',
+          firstName: 'Test',
+          lastName: 'User',
+          isEmailVerified: false,
+        }])),
+      })),
+    })),
+    update: jest.fn(() => ({
+      set: jest.fn(() => ({
+        where: jest.fn(() => ({
+          returning: jest.fn(() => Promise.resolve([{
+            id: 'test-id',
+            email: 'test@example.com',
+            firstName: 'Test',
+            lastName: 'User',
+            isEmailVerified: false,
+          }])),
+        })),
+      })),
+    })),
+    delete: jest.fn(() => ({
+      where: jest.fn(() => ({
+        returning: jest.fn(() => Promise.resolve([{
+          id: 'test-id',
+          email: 'test@example.com',
+          firstName: 'Test',
+          lastName: 'User',
+          isEmailVerified: false,
+        }])),
+      })),
+    })),
+  },
+}));
 
 // Polyfill TextEncoder for Node.js environment
 const { TextEncoder, TextDecoder } = require('util');
