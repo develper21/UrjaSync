@@ -1,10 +1,56 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import BillingHistoryTable from '@/components/billing/BillingHistoryTable';
-import { MOCK_DATA } from '@/lib/mockData';
+import { useAuth } from '@/lib/hooks/useAuth';
+
+import { Bill } from '@/lib/types';
 
 const BillingView: React.FC = () => {
+  const { accessToken } = useAuth();
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [estimatedBill, setEstimatedBill] = useState(0);
+  const [totalSavings, setTotalSavings] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBillingData = async () => {
+      try {
+        const response = await fetch('/api/billing', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setBills(data.data.bills || []);
+          setEstimatedBill(data.data.estimatedBill || 0);
+          setTotalSavings(data.data.totalSavings || 0);
+        }
+      } catch (error) {
+        console.error('Error fetching billing data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (accessToken) {
+      fetchBillingData();
+    }
+  }, [accessToken]);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-3xl font-bold text-gray-800">Billing & Savings</h1>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-gray-800">Billing & Savings</h1>
@@ -18,10 +64,10 @@ const BillingView: React.FC = () => {
             Estimated Monthly Bill
           </h2>
           <p className="text-5xl font-bold text-gray-900">
-            ₹{MOCK_DATA.estimatedBill.toFixed(2)}
+            ₹{estimatedBill.toFixed(2)}
           </p>
           <p className="text-gray-600 mt-2">
-            Next bill generates on Nov 1, 2025
+            Next bill generates on {new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
           </p>
         </div>
         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg">
@@ -29,7 +75,7 @@ const BillingView: React.FC = () => {
             Total Savings This Month
           </h2>
           <p className="text-5xl font-bold">
-            ₹{MOCK_DATA.totalSavings.toFixed(2)}
+            ₹{totalSavings.toFixed(2)}
           </p>
           <p className="opacity-90 mt-2">
             Thanks to your smart optimizations!
@@ -37,7 +83,7 @@ const BillingView: React.FC = () => {
         </div>
       </div>
 
-      <BillingHistoryTable bills={MOCK_DATA.bills} />
+      <BillingHistoryTable bills={bills} />
     </div>
   );
 };
