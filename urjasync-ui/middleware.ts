@@ -18,7 +18,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(newUrl);
   }
 
-  // Continue with the request
   return NextResponse.next();
 }
 
