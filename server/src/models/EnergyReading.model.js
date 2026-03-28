@@ -10,13 +10,12 @@ const energyReadingSchema = new mongoose.Schema({
   deviceId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Device',
-    default: null, // null means total household reading
+    default: null,
     index: true
   },
   timestamp: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
   },
   usage: {
     type: Number,
