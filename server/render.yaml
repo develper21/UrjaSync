@@ -1,0 +1,30 @@
+# Render Blueprint for UrjaSync Backend
+# Deploy this at: https://dashboard.render.com/blueprints
+
+services:
+  - type: web
+    name: urjasync-backend
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false  # Set this manually in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: JWT_REFRESH_EXPIRE
+        value: 30d
+      - key: CLIENT_URL
+        sync: false  # Will be your Netlify URL
+    healthCheckPath: /health
+    autoDeploy: true
