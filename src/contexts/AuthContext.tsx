@@ -1,11 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { authService } from "@/services/auth.service";
+import { UserProfile } from "@/services/user.service";
 
 interface AuthContextType {
-  session: Session | null;
-  user: User | null;
+  user: UserProfile | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
@@ -17,49 +16,81 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    // Check if user is authenticated on mount
+    const checkAuth = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          const userData = await authService.getMe();
+          setUser(userData);
+        } catch (error) {
+          console.error("Auth check failed:", error);
+          // Token invalid, clear storage
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+        }
+      }
       setLoading(false);
-    });
+    };
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    checkAuth();
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: fullName },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-    return { error };
+    try {
+      const response = await authService.register({ email, password, fullName });
+      if (response.data?.user) {
+        setUser(response.data.user);
+        navigate("/dashboard");
+        return { error: null };
+      }
+      return { error: new Error("Registration failed") };
+    } catch (error: any) {
+      return { 
+        error: { 
+          message: error.response?.data?.message || "Registration failed" 
+        } 
+      };
+    }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error };
+    try {
+      const response = await authService.login({ email, password });
+      if (response.data?.user) {
+        setUser(response.data.user);
+        navigate("/dashboard");
+        return { error: null };
+      }
+      return { error: new Error("Login failed") };
+    } catch (error: any) {
+      return { 
+        error: { 
+          message: error.response?.data?.message || "Invalid email or password" 
+        } 
+      };
+    }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/auth");
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
