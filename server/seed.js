@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import connectDB from './src/config/database.js';
 import seedDatabase from './src/utils/seeder.js';
 
-dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 const seed = async () => {
   await connectDB();
