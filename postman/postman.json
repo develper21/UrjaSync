@@ -1,0 +1,892 @@
+{
+  "info": {
+    "name": "UrjaSync Frontend API",
+    "description": "Complete API collection for UrjaSync Energy Management System - Frontend Side",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "frontendUrl",
+      "value": "http://localhost:5173",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register new user - Frontend calls this endpoint"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login user - Frontend calls this endpoint"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Logout user - Frontend calls this endpoint"
+          }
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Get current user - Frontend calls this on mount"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh-token"]
+            },
+            "description": "Refresh access token - Frontend calls this automatically on 401"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "settings"]
+            },
+            "description": "Get user settings - Frontend calls this in Settings page"
+          }
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"monthlyBudget\": 5000,\n  \"alertThreshold\": 80,\n  \"notifications\": {\n    \"energyAlerts\": true,\n    \"costWarnings\": true,\n    \"deviceOffline\": true,\n    \"weeklyReports\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "settings"]
+            },
+            "description": "Update user settings - Frontend calls this from Settings page"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Updated\",\n  \"email\": \"updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "profile"]
+            },
+            "description": "Update user profile - Frontend calls this from Settings page"
+          }
+        },
+        {
+          "name": "Update Notifications",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"energyAlerts\": true,\n  \"costWarnings\": false,\n  \"deviceOffline\": true,\n  \"weeklyReports\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "notifications"]
+            },
+            "description": "Update notification preferences - Frontend calls this from Settings page"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Devices",
+      "item": [
+        {
+          "name": "Get All Devices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/devices",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices"]
+            },
+            "description": "Get all devices - Frontend calls this in Devices page"
+          }
+        },
+        {
+          "name": "Get Rooms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/devices/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", "rooms"]
+            },
+            "description": "Get all rooms - Frontend calls this for room filters"
+          }
+        },
+        {
+          "name": "Create Device",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Smart Light\",\n  \"room\": \"Living Room\",\n  \"type\": \"light\",\n  \"powerRating\": 15,\n  \"icon\": \"bulb\",\n  \"isSmart\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devices",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices"]
+            },
+            "description": "Create device - Frontend calls this from Add Device modal"
+          }
+        },
+        {
+          "name": "Get Device by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/devices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", ":id"]
+            },
+            "description": "Get device details - Frontend calls this for device details view"
+          }
+        },
+        {
+          "name": "Update Device",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Device Name\",\n  \"powerRating\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", ":id"]
+            },
+            "description": "Update device - Frontend calls this from Edit Device modal"
+          }
+        },
+        {
+          "name": "Delete Device",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/devices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", ":id"]
+            },
+            "description": "Delete device - Frontend calls this from Delete confirmation"
+          }
+        },
+        {
+          "name": "Toggle Device",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devices/:id/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", ":id", "toggle"]
+            },
+            "description": "Toggle device on/off - Frontend calls this from device card"
+          }
+        },
+        {
+          "name": "Set Intensity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"intensity\": 75\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devices/:id/intensity",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", ":id", "intensity"]
+            },
+            "description": "Set device intensity - Frontend calls this from intensity slider"
+          }
+        },
+        {
+          "name": "Get Device Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/devices/:id/stats?days=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices", ":id", "stats"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7"
+                }
+              ]
+            },
+            "description": "Get device stats - Frontend calls this for device analytics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Energy",
+      "item": [
+        {
+          "name": "Get Realtime Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/energy/realtime",
+              "host": ["{{baseUrl}}"],
+              "path": ["energy", "realtime"]
+            },
+            "description": "Get realtime usage - Frontend calls this for live dashboard"
+          }
+        },
+        {
+          "name": "Get Today Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/energy/today",
+              "host": ["{{baseUrl}}"],
+              "path": ["energy", "today"]
+            },
+            "description": "Get today's usage - Frontend calls this for daily charts"
+          }
+        },
+        {
+          "name": "Get Weekly Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/energy/weekly",
+              "host": ["{{baseUrl}}"],
+              "path": ["energy", "weekly"]
+            },
+            "description": "Get weekly usage - Frontend calls this for weekly charts"
+          }
+        },
+        {
+          "name": "Get Monthly Usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/energy/monthly",
+              "host": ["{{baseUrl}}"],
+              "path": ["energy", "monthly"]
+            },
+            "description": "Get monthly usage - Frontend calls this for monthly charts"
+          }
+        },
+        {
+          "name": "Get Range Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/energy/range?from=2024-01-01&to=2024-01-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["energy", "range"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2024-01-31"
+                }
+              ]
+            },
+            "description": "Get custom range data - Frontend calls this for date picker"
+          }
+        },
+        {
+          "name": "Add Reading",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"device_id_here\",\n  \"usage\": 5.5,\n  \"cost\": 12.5,\n  \"rate\": 2.5,\n  \"solarGeneration\": 2.0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/energy/reading",
+              "host": ["{{baseUrl}}"],
+              "path": ["energy", "reading"]
+            },
+            "description": "Add energy reading - Frontend calls this for simulation"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Usage Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/usage-trend?days=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "usage-trend"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7"
+                }
+              ]
+            },
+            "description": "Get usage trend - Frontend calls this for Analytics page"
+          }
+        },
+        {
+          "name": "Get Cost Analysis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/cost-analysis",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "cost-analysis"]
+            },
+            "description": "Get cost analysis - Frontend calls this for cost charts"
+          }
+        },
+        {
+          "name": "Get Device Breakdown",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/device-breakdown",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "device-breakdown"]
+            },
+            "description": "Get device breakdown - Frontend calls this for pie charts"
+          }
+        },
+        {
+          "name": "Get Carbon Trend",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/carbon-trend",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "carbon-trend"]
+            },
+            "description": "Get carbon trend - Frontend calls this for sustainability charts"
+          }
+        },
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/dashboard-stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "dashboard-stats"]
+            },
+            "description": "Get dashboard stats - Frontend calls this for main dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "Get Current Bill",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "current"]
+            },
+            "description": "Get current bill - Frontend calls this for Billing page"
+          }
+        },
+        {
+          "name": "Get Bill History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/history?limit=12",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "history"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "12"
+                }
+              ]
+            },
+            "description": "Get bill history - Frontend calls this for history table"
+          }
+        },
+        {
+          "name": "Get Budget Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/budget-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "budget-status"]
+            },
+            "description": "Get budget status - Frontend calls this for budget progress"
+          }
+        },
+        {
+          "name": "Get Savings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/savings",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "savings"]
+            },
+            "description": "Get savings - Frontend calls this for savings display"
+          }
+        },
+        {
+          "name": "Generate Bill",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"month\": \"January\",\n  \"year\": 2024\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/billing/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["billing", "generate"]
+            },
+            "description": "Generate bill - Frontend calls this for admin function"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sustainability",
+      "item": [
+        {
+          "name": "Get Sustainability Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sustainability/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["sustainability", "stats"]
+            },
+            "description": "Get sustainability stats - Frontend calls this for Sustainability page"
+          }
+        },
+        {
+          "name": "Get Goals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sustainability/goals",
+              "host": ["{{baseUrl}}"],
+              "path": ["sustainability", "goals"]
+            },
+            "description": "Get goals - Frontend calls this for goals display"
+          }
+        },
+        {
+          "name": "Update Goal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current\": 75\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sustainability/goals/:goalId",
+              "host": ["{{baseUrl}}"],
+              "path": ["sustainability", "goals", ":goalId"]
+            },
+            "description": "Update goal - Frontend calls this from goal update modal"
+          }
+        },
+        {
+          "name": "Get Emissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sustainability/emissions?months=6",
+              "host": ["{{baseUrl}}"],
+              "path": ["sustainability", "emissions"],
+              "query": [
+                {
+                  "key": "months",
+                  "value": "6"
+                }
+              ]
+            },
+            "description": "Get emissions - Frontend calls this for emissions chart"
+          }
+        },
+        {
+          "name": "Initialize Sustainability",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sustainability/init",
+              "host": ["{{baseUrl}}"],
+              "path": ["sustainability", "init"]
+            },
+            "description": "Initialize sustainability - Frontend calls this on first visit"
+          }
+        }
+      ]
+    }
+  ]
+}
