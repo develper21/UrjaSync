@@ -118,6 +118,44 @@ const seedDatabase = async () => {
     }
 
     await EnergyReading.insertMany(readings);
+
+    // Generate device-specific energy readings for the past 7 days
+    const deviceReadings = [];
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    for (let day = 0; day < 7; day++) {
+      const date = new Date(sevenDaysAgo);
+      date.setDate(date.getDate() + day);
+
+      devices.forEach(device => {
+        // Only create readings for active devices
+        if (device.status) {
+          const hoursActive = Math.floor(Math.random() * 8) + 4; // 4-12 hours active per day
+          for (let h = 0; h < hoursActive; h++) {
+            const hour = Math.floor(Math.random() * 24);
+            const timestamp = new Date(date);
+            timestamp.setHours(hour);
+
+            const usage = (device.powerRating * 0.5) + (Math.random() * device.powerRating * 0.3);
+            const rate = hour >= 10 && hour <= 17 ? 8.5 : (hour >= 22 || hour <= 6 ? 4.0 : 6.0);
+            const cost = usage * rate;
+
+            deviceReadings.push({
+              userId: demoUser._id,
+              deviceId: device._id,
+              timestamp,
+              usage,
+              cost,
+              rate,
+              solarGeneration: 0
+            });
+          }
+        }
+      });
+    }
+
+    await EnergyReading.insertMany(deviceReadings);
     console.log('✅ Created sample energy readings');
 
     // Create sample bills
