@@ -4,6 +4,9 @@ import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
@@ -18,17 +21,85 @@ import sustainabilityRoutes from './src/routes/sustainability.routes.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { setupSocketHandlers } from './src/socket/handlers.js';
 
-// Load environment file based on NODE_ENV
-const env = process.env.NODE_ENV || 'development';
-dotenv.config({ path: `.env.${env}` });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment file based on NODE_ENV with fallbacks
+const nodeEnv = process.env.NODE_ENV || 'development';
+const isProd = nodeEnv === 'production';
+
+const candidateEnvFiles = isProd
+  ? ['.env.production', '.env.prod', '.env']
+  : ['.env.local', '.env.development', '.env'];
+
+for (const envFile of candidateEnvFiles) {
+  const envPath = path.resolve(__dirname, envFile);
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+  }
+}
+// Default fallback
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
+
+// CORS configuration
+const defaultOrigins = [
+  'https://urjasyncui.netlify.app',
+  'https://urjasync.netlify.app',
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:8080',
+  'http://127.0.0.1:8081',
+  'http://127.0.0.1:3000',
+];
+
+const envOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map((url) => url.trim().replace(/\/$/, ''))
+  : [];
+
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  const cleanOrigin = origin.replace(/\/$/, '');
+  if (allowedOrigins.includes(cleanOrigin)) return true;
+  // Allow any Netlify subdomains (including deploy previews)
+  if (cleanOrigin.endsWith('.netlify.app')) return true;
+  // In development, allow any origin
+  if (nodeEnv !== 'production') return true;
+  return false;
+};
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (isOriginAllowed(origin)) {
+      return callback(null, true);
+    }
+    console.warn(`[CORS] Blocked origin: ${origin}`);
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200,
+};
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL,
-    credentials: true
-  }
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'), false);
+    },
+    credentials: true,
+    methods: ['GET', 'POST'],
+  },
 });
 
 // Connect to MongoDB
@@ -37,34 +108,23 @@ connectDB();
 // Security middleware
 app.use(helmet());
 
-// CORS configuration - use only environment variable
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+// CORS middleware & preflight
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later'
+  max: 200,
+  message: { success: false, message: 'Too many requests from this IP, please try again later' }
 });
 app.use('/api/', limiter);
 
 // Stricter rate limit for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: 'Too many authentication attempts, please try again later'
+  max: 60, // Allow reasonable login/token refresh attempts
+  message: { success: false, message: 'Too many authentication attempts, please try again later' }
 });
 app.use('/api/auth/', authLimiter);
 

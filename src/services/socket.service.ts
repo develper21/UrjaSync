@@ -12,7 +12,7 @@ class SocketService {
       auth: {
         token: accessToken,
       },
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
     });
 
     this.socket.on('connect', () => {
