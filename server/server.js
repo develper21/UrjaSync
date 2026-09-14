@@ -18,13 +18,13 @@ import sustainabilityRoutes from './src/routes/sustainability.routes.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { setupSocketHandlers } from './src/socket/handlers.js';
 
-dotenv.config();
+dotenv.config({ path: '.env.local' });
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL,
     credentials: true
   }
 });
@@ -35,7 +35,7 @@ connectDB();
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL,
   credentials: true
 }));
 
